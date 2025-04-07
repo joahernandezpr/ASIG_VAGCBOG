@@ -23,19 +23,23 @@
                 discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
             }).then(function() {
                 console.log('API cargada');
+            }, function(error) {
+                console.error('Error al cargar la API', error);
             });
         }
 
         // Consultar estado del trámite
         function consultarEstado() {
             var codigo = document.getElementById("codigo").value;
+            console.log("Código ingresado:", codigo); // Para depurar
             var sheetId = "1J_k03Utitdq_1qkFqjozrfRNcbspHlfbgp1zIAcHZ6Y";
 
             gapi.client.sheets.spreadsheets.values.get({
                 spreadsheetId: sheetId,
-                range: "Asig_2024-2026!A2:M1000",  // Ajusta el rango según sea necesario
+                range: "Asig_2024-2026!A1:L10000",  // Ajusta el rango según sea necesario
             }).then(function(response) {
                 var data = response.result.values;
+                console.log(data); // Ver los datos que se reciben
                 var resultado = document.getElementById("resultado");
                 resultado.innerHTML = ""; // Limpiar resultados anteriores
 
