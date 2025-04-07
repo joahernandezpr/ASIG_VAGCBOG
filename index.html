@@ -33,7 +33,7 @@
 
             gapi.client.sheets.spreadsheets.values.get({
                 spreadsheetId: sheetId,
-                range: "'Asig_2024-2026'!A2:M1000",  // Ajusta el rango según sea necesario
+                range: "Asig_2024-2026!A2:M1000",  // Ajusta el rango según sea necesario
             }).then(function(response) {
                 var data = response.result.values;
                 var resultado = document.getElementById("resultado");
