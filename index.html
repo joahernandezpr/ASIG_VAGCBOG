@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta Estado de Trámite</title>
+    <script src="https://apis.google.com/js/api.js"></script>
+</head>
+<body>
+    <h1>Consulta Estado de Trámite</h1>
+    <label for="codigo">Ingrese el Código de la Asignatura:</label>
+    <input type="text" id="codigo" placeholder="Código de la Asignatura">
+    <button onclick="consultarEstado()">Consultar</button>
+
+    <h2>Resultados:</h2>
+    <div id="resultado"></div>
+
+    <script>
+        // Cargar la API de Google Sheets
+        function cargarAPI() {
+            gapi.client.init({
+                apiKey: 'AIzaSyDI2fUwg4qadRA7Ogv2ASVtTlGuMtTiCTU',
+                discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
+            }).then(function() {
+                console.log('API cargada');
+            });
+        }
+
+        // Consultar estado del trámite
+        function consultarEstado() {
+            var codigo = document.getElementById("codigo").value;
+            var sheetId = "1J_k03Utitdq_1qkFqjozrfRNcbspHlfbgp1zIAcHZ6Y";
+
+            gapi.client.sheets.spreadsheets.values.get({
+                spreadsheetId: sheetId,
+                range: "Asig_2024-2026!A1:L10000",  // Ajusta el rango según sea necesario
+            }).then(function(response) {
+                var data = response.result.values;
+                var resultado = document.getElementById("resultado");
+                resultado.innerHTML = ""; // Limpiar resultados anteriores
+
+                var encontrado = false;
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i][0] == codigo) {  // Asumimos que la columna 0 tiene el Código de Trámite
+                        encontrado = true;
+                        resultado.innerHTML = `
+                            <p><strong>Fecha de solicitud:</strong> ${data[i][1]}</p>
+                            <p><strong>Area Curricular:</strong> ${data[i][2]}</p>
+                            <p><strong>Tipo de trámite:</strong> ${data[i][4]}</p>
+                            <p><strong>Código de asignatura:</strong> ${data[i][5]}</p>
+                            <p><strong>Nombre de la asignatura:</strong> ${data[i][6]}</p>
+                            <p><strong>Estado del trámite:</strong> ${data[i][7]}</p>
+                            <p><strong>Fecha de CDAC:</strong> ${data[i][8]}</p>
+                            <p><strong>Fecha de aprobación COFA:</strong> ${data[i][9]}</p>
+                            <p><strong>Acta de aprobación:</strong> ${data[i][10]}</p>
+                            <p><strong>Observaciones:</strong> ${data[i][12]}</p>
+                        `;
+                        break;
+                    }
+                }
+
+                if (!encontrado) {
+                    resultado.innerHTML = "<p>No se encontró información para el código ingresado.</p>";
+                }
+            });
+        }
+
+        // Cargar la API de Google cuando se cargue la página
+        function init() {
+            gapi.load('client', cargarAPI);
+        }
+
+        init();
+    </script>
+</body>
+</html>
